@@ -19,18 +19,17 @@ public class Agendamento {
     @GeneratedValue (strategy = GenerationType.IDENTITY)
     @Column (name = "id")
     private Long id;
-    @Column (name = "dataAgendamento")
-    private String dataAgendamento;
-    @Column (name = "horaAgendamento")
-    private String horaAgendamento;
     @Column(name = "descricaoAgendamento")
     private String descricaoAgendamento;
-    @JoinColumn(name = "profissional")
+    @JoinColumn(name = "id_profissional")
     @ManyToOne
     private Profissional profissional;
-    @JoinColumn(name = "cliente")
+    @JoinColumn(name = "id_cliente")
     @ManyToOne
     private Cliente cliente;
+    @JoinColumn(name = "id_Horario")
+    @ManyToOne
+    private Horario horario;
     @Column(name = "tipoDeAgendamento")
     @Enumerated(value = EnumType.STRING)
     private TiposDeAgendamentos tiposDeAgendamentos;

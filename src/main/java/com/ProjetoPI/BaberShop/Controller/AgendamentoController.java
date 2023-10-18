@@ -4,11 +4,10 @@ import com.ProjetoPI.BaberShop.DTO.AgendamentoDTO;
 import com.ProjetoPI.BaberShop.DTO.AtualizaStatusDTO;
 import com.ProjetoPI.BaberShop.Enums.StatusAgendamento;
 import com.ProjetoPI.BaberShop.Enums.TiposDeAgendamentos;
-import com.ProjetoPI.BaberShop.Model.Agendamento;
-import com.ProjetoPI.BaberShop.Model.Cliente;
-import com.ProjetoPI.BaberShop.Model.Profissional;
+import com.ProjetoPI.BaberShop.Model.*;
 import com.ProjetoPI.BaberShop.Service.AgendamentoService;
 import com.ProjetoPI.BaberShop.Service.ClienteService;
+import com.ProjetoPI.BaberShop.Service.JornadaDeTrabalhoService;
 import com.ProjetoPI.BaberShop.Service.ProfissionalService;
 import com.ProjetoPI.BaberShop.exception.RegraNegocioException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +28,8 @@ public class AgendamentoController {
     private ClienteService clienteService;
     @Autowired
     private ProfissionalService profissionalService;
+    @Autowired
+    private JornadaDeTrabalhoService jornadaDeTrabalhoService;
 
 
     @PostMapping
@@ -91,8 +92,7 @@ public class AgendamentoController {
 
         Agendamento agendamentoFiltro = new Agendamento();
         agendamentoFiltro.setDescricaoAgendamento(descricaoAgendamento);
-        agendamentoFiltro.setDataAgendamento(dataAgendamento);
-        agendamentoFiltro.setHoraAgendamento(horaAgendamento);
+
 
         Optional<Cliente>cliente=clienteService.obterPorId(idCliente);
 
@@ -109,17 +109,20 @@ public class AgendamentoController {
         Agendamento agendamento = new Agendamento();
         agendamento.setId(dto.getId());
         agendamento.setDescricaoAgendamento(dto.getDescricaoAgendamento());
-        agendamento.setDataAgendamento(dto.getDataAgendamento());
-        agendamento.setHoraAgendamento(dto.getHoraAgendamento());
+
 
         Cliente cliente = clienteService
-                .obterPorId(dto.getCliente())
+                .obterPorId(dto.getId_cliente())
                 .orElseThrow(()-> new RegraNegocioException("Cliente não encontrado"));
         Profissional profissional = profissionalService
-                .obterPorId(dto.getProfissional())
+                .obterPorId(dto.getId_profissional())
                 .orElseThrow(()-> new RegraNegocioException("Profissional não encontrado"));
         agendamento.setCliente(cliente);
         agendamento.setProfissional(profissional);
+
+        Horario horario = jornadaDeTrabalhoService.obterHorarioPorId(dto.getId_horario())
+                .orElseThrow(()->new RegraNegocioException("horario não encontrado"));
+        agendamento.setHorario(horario);
 
         if (dto.getTiposDeAgendamentos()!=null){
             agendamento.setTiposDeAgendamentos(TiposDeAgendamentos.valueOf(dto.getTiposDeAgendamentos()));
@@ -127,6 +130,8 @@ public class AgendamentoController {
         if (dto.getStatusAgendamento()!=null){
             agendamento.setStatusAgendamento(StatusAgendamento.valueOf(dto.getStatusAgendamento()));
         }
+
+
         return agendamento;
     }
 }

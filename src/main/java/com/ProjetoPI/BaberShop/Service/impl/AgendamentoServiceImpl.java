@@ -73,17 +73,15 @@ public class AgendamentoServiceImpl implements AgendamentoService {
         if(agendamento.getTiposDeAgendamentos()==null){
             throw new RegraNegocioException("Informe um tipo de agendamento");
         }
-        if (agendamento.getHoraAgendamento()==null || agendamento.getHoraAgendamento().trim().equals("")){
-            throw new RegraNegocioException("Informe a Hora do agendamento");
-        }
-        if(agendamento.getDataAgendamento()==null || agendamento.getDataAgendamento().trim().equals("")){
-            throw new RegraNegocioException("Informe a Data do agendamento");
-        }
+
         if(agendamento.getProfissional()==null || agendamento.getProfissional().getId()==null){
             throw new RegraNegocioException("Informe um Profissional");
         }
         if(agendamento.getCliente()==null || agendamento.getCliente().getId()==null){
             throw new RegraNegocioException("Cliente não identificado");
+        }
+        if (agendamento.getHorario()==null || agendamento.getHorario().getId()  ==null ){
+            throw new RegraNegocioException("Horario não encontrado");
         }
 
     }
