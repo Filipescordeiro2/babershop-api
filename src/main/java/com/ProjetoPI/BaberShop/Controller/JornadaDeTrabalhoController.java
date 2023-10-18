@@ -38,6 +38,7 @@ public class JornadaDeTrabalhoController {
      private ProfissionalRepository profissionalRepository;
      @Autowired
      private JornadaDeTrabalhoRepository jornadaDeTrabalhoRepository;
+     
 
     @PostMapping("/cadastrar/jornada")
     public ResponseEntity<String> cadastrarJornada(@RequestBody JornadaDeTrabalhoDTO jornadaDTO) {
@@ -107,13 +108,7 @@ public class JornadaDeTrabalhoController {
         }).orElseGet(()-> new ResponseEntity("Jordana não encontrado no banco de dados",HttpStatus.BAD_REQUEST));
     }
 
-    @DeleteMapping("/horarios/{id}")
-    public ResponseEntity deletarHorario(@PathVariable("id") Long id){
-        return service.obterHorarioPorId(id).map(entidade ->{
-            service.deletarHorario(entidade);
-            return new ResponseEntity(HttpStatus.NO_CONTENT);
-        }).orElseGet(()-> new ResponseEntity("Horario não encontrado no banco de dados",HttpStatus.BAD_REQUEST));
-    }
+   
 
     @GetMapping
     public ResponseEntity buscar(@RequestParam(value = "intervalor",required = false)String intervalo,
@@ -155,6 +150,7 @@ public class JornadaDeTrabalhoController {
             }
         }).orElseGet(()-> new ResponseEntity("Lancamento não encontrado no banco de dados", HttpStatus.BAD_REQUEST));
     }
+    
 
     private JornadaDeTrabalho converter(JornadaDeTrabalhoDTO dto){
        JornadaDeTrabalho jornadaDeTrabalho = new JornadaDeTrabalho();
