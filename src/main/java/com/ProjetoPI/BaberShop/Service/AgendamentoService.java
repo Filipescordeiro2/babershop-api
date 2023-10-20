@@ -2,6 +2,8 @@ package com.ProjetoPI.BaberShop.Service;
 
 import com.ProjetoPI.BaberShop.Enums.StatusAgendamento;
 import com.ProjetoPI.BaberShop.Model.Agendamento;
+import com.ProjetoPI.BaberShop.Model.Cliente;
+import com.ProjetoPI.BaberShop.Model.Horario;
 
 import java.math.BigDecimal;
 import java.util.List;

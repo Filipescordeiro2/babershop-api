@@ -43,7 +43,8 @@ public class HorariosController {
     public ResponseEntity<java.util.List<Horario>> buscarHorariosDoProfissional(@RequestParam(value = "Profissional")Long Profissional,
                                                                       @RequestParam(value = "data",required = false) String data,
                                                                       @RequestParam(value = "hora",required = false)String hora,
-                                                                      @RequestParam(value = "status",required=false)String status) {
+                                                                      @RequestParam(value = "status",required=false)String status)
+                                                                                                     {
 
 
         Optional<Profissional> profissionalOpt = profissionalService.obterPorId(Profissional);
@@ -58,11 +59,11 @@ public class HorariosController {
         horarioFiltro.setHora(hora);
         horarioFiltro.setProfissional(profissionalOpt.get());
         horarioFiltro.setStatus(status);
-
         java.util.List<Horario> horarios = service.buscarHorario(horarioFiltro);
 
         return ResponseEntity.ok(horarios);
     }
+    
 
      @DeleteMapping("{id}")
     public ResponseEntity deletarHorario(@PathVariable("id") Long id){

@@ -12,6 +12,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+import java.util.Optional;
+
 @RestController
 @RequestMapping("/api/cliente")
 public class ClienteController {
@@ -49,5 +52,32 @@ public class ClienteController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
+
+  @GetMapping("/buscarPorNome")
+  public ResponseEntity buscar (@RequestParam(value = "nome",required = false)String nome){
+
+      Cliente clienteFiltro = new Cliente();
+           clienteFiltro.setNome(nome);
+
+      List<Cliente> clientes = service.buscar(clienteFiltro);
+      return ResponseEntity.ok(clientes);
+  }
+
+  @GetMapping
+    public ResponseEntity buscar (@RequestParam(value = "idCliente",required = false)Long idCliente){
+
+      Cliente ClienteFiltro = new Cliente();
+
+      Optional<Cliente>cliente=service.obterPorId(idCliente);
+
+        if (!cliente.isPresent()){
+            return ResponseEntity.badRequest().body("não foi possivel realizar a consulta");
+        }
+
+      List<Cliente> clientes = service.buscar(ClienteFiltro);
+      return ResponseEntity.ok(clientes);
+  }
+
+
 
 }

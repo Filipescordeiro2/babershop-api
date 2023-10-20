@@ -7,8 +7,11 @@ import com.ProjetoPI.BaberShop.exception.ErroAutenticacao;
 import com.ProjetoPI.BaberShop.exception.RegraNegocioException;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Example;
+import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -46,6 +49,15 @@ public class ClienteServiceImpl implements ClienteService {
             throw new RegraNegocioException("Ja existe um usuario cadastrado com esse email");
         }
     }
+
+    @Override
+    @Transactional
+    public List<Cliente> buscar(Cliente clienteFiltro) {
+        Example example = Example.of(clienteFiltro,
+                ExampleMatcher.matching()
+                        .withIgnoreCase().withStringMatcher(ExampleMatcher.StringMatcher.CONTAINING));
+
+        return clienteRepository.findAll(example);    }
 
     @Override
     public Optional<Cliente> obterPorId(Long id) {

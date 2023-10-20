@@ -2,6 +2,8 @@ package com.ProjetoPI.BaberShop.Service.impl;
 
 import com.ProjetoPI.BaberShop.Enums.StatusAgendamento;
 import com.ProjetoPI.BaberShop.Model.Agendamento;
+import com.ProjetoPI.BaberShop.Model.Cliente;
+import com.ProjetoPI.BaberShop.Model.Horario;
 import com.ProjetoPI.BaberShop.Repository.AgendamentoRepository;
 import com.ProjetoPI.BaberShop.Service.AgendamentoService;
 import com.ProjetoPI.BaberShop.exception.RegraNegocioException;
@@ -14,6 +16,9 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.format.DateTimeParseException;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -90,5 +95,6 @@ public class AgendamentoServiceImpl implements AgendamentoService {
     public Optional<Agendamento> obterPorId(Long id) {
         return repository.findById(id);
     }
+
 
 }

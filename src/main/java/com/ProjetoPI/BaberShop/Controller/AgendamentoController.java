@@ -15,6 +15,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -33,16 +34,21 @@ public class AgendamentoController {
 
 
     @PostMapping
-    public ResponseEntity salvar(@RequestBody AgendamentoDTO dto){
+    public ResponseEntity salvar(@RequestBody AgendamentoDTO dto) {
         try {
+            // Converter DTO para entidade Agendamento
             Agendamento entidade = converter(dto);
-            entidade=service.salvar(entidade);
+
+            // Se não houver conflito, salvar o agendamento
+            entidade = service.salvar(entidade);
+    
             return new ResponseEntity(entidade, HttpStatus.CREATED);
-        }catch (RegraNegocioException e){
+        } catch (RegraNegocioException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 
+  
     @PutMapping("{id}")
     public ResponseEntity atualizar(@PathVariable("id")Long id,@RequestBody AgendamentoDTO dto){
         return service.obterPorId(id).map(entity ->{
@@ -84,14 +90,13 @@ public class AgendamentoController {
     }
 
     @GetMapping
-    public ResponseEntity buscar(@RequestParam(value = "descricaoAgendamento",required = false)String descricaoAgendamento,
-                                 @RequestParam(value = "dataAgendamento",required = false)String dataAgendamento,
-                                 @RequestParam(value = "horaAgendamento",required = false)String horaAgendamento,
-                                 @RequestParam(value = "cliente")Long idCliente                                 ){
-
+    public ResponseEntity buscar(@RequestParam(value = "status",required = false)String status,
+                                 @RequestParam(value = "data",required = false) String dataAgendamento,
+                                 @RequestParam(value = "hora",required = false)String horaAgendamento,
+                                 @RequestParam(value = "idCliente")Long idCliente){
 
         Agendamento agendamentoFiltro = new Agendamento();
-        agendamentoFiltro.setDescricaoAgendamento(descricaoAgendamento);
+        agendamentoFiltro.setStatusAgendamento(StatusAgendamento.valueOf(status));
 
 
         Optional<Cliente>cliente=clienteService.obterPorId(idCliente);
@@ -101,6 +106,7 @@ public class AgendamentoController {
         }else {
             agendamentoFiltro.setCliente(cliente.get());
         }
+
         List<Agendamento>agendamentos=service.buscar(agendamentoFiltro);
         return ResponseEntity.ok(agendamentos);
     }
@@ -109,7 +115,6 @@ public class AgendamentoController {
         Agendamento agendamento = new Agendamento();
         agendamento.setId(dto.getId());
         agendamento.setDescricaoAgendamento(dto.getDescricaoAgendamento());
-
 
         Cliente cliente = clienteService
                 .obterPorId(dto.getId_cliente())
@@ -130,8 +135,6 @@ public class AgendamentoController {
         if (dto.getStatusAgendamento()!=null){
             agendamento.setStatusAgendamento(StatusAgendamento.valueOf(dto.getStatusAgendamento()));
         }
-
-
         return agendamento;
     }
 }

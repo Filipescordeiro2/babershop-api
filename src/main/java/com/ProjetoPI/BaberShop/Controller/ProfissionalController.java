@@ -7,12 +7,18 @@ import com.ProjetoPI.BaberShop.Model.Profissional;
 import com.ProjetoPI.BaberShop.Service.ProfissionalService;
 import com.ProjetoPI.BaberShop.exception.ErroAutenticacao;
 import com.ProjetoPI.BaberShop.exception.RegraNegocioException;
+
+import java.util.List;
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -50,5 +56,19 @@ public class ProfissionalController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
+      @GetMapping
+    public ResponseEntity buscar (@RequestParam(value = "idProfissional",required = false)Long idProfissional){
+
+      Profissional profissionalFiltro = new Profissional();
+
+      Optional<Profissional>profissional=service.obterPorId(idProfissional);
+
+        if (!profissional.isPresent()){
+            return ResponseEntity.badRequest().body("não foi possivel realizar a consulta");
+        }
+
+      List<Profissional> profissionais = service.buscar(profissionalFiltro);
+      return ResponseEntity.ok(profissionais);
+  }
 
 }

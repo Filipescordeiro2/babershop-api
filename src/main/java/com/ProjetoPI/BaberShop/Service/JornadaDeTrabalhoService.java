@@ -18,7 +18,6 @@ public interface JornadaDeTrabalhoService {
     List<JornadaDeTrabalho> buscarJornada (JornadaDeTrabalho jornadaFiltro);
     List<Horario> buscarHorario (Horario horarioFiltro);
 
-
     JornadaDeTrabalho atualizar(JornadaDeTrabalho jornadaDeTrabalho);
 
 
