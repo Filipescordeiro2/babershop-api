@@ -8,6 +8,7 @@ import com.ProjetoPI.BaberShop.Service.ProfissionalService;
 import com.ProjetoPI.BaberShop.exception.ErroAutenticacao;
 import com.ProjetoPI.BaberShop.exception.RegraNegocioException;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -42,7 +43,6 @@ public class ProfissionalController {
     public ResponseEntity salvar (@RequestBody ClienteDTO dto){
         Profissional profissional = Profissional.builder()
                 .nome(dto.getNome())
-                .sobrenome(dto.getSobrenome())
                 .telefone(dto.getTelefone())
                 .cpf(dto.getCpf())
                 .dataDeNascimento(dto.getDataDeNascimento())
@@ -70,5 +70,19 @@ public class ProfissionalController {
       List<Profissional> profissionais = service.buscar(profissionalFiltro);
       return ResponseEntity.ok(profissionais);
   }
+
+    @GetMapping("/nomes")
+    public ResponseEntity<List<String>> listarNomesDosProfissionais() {
+        List<Profissional> profissionais = service.buscar(new Profissional());
+
+        List<String> nomesDosProfissionais = new ArrayList<>();
+
+        for (Profissional profissional : profissionais) {
+            nomesDosProfissionais.add(profissional.getNome());
+        }
+
+        return ResponseEntity.ok(nomesDosProfissionais);
+    }
+
 
 }

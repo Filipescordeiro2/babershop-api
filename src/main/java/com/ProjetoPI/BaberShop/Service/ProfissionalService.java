@@ -15,4 +15,5 @@ public interface ProfissionalService {
     List<Profissional> buscar (Profissional profissionalFiltro);
 
     Optional<Profissional> obterPorId(Long id);
+    List<Profissional>findByNome(String nome);
 }

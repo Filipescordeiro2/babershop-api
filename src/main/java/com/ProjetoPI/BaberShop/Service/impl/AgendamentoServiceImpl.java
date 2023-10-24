@@ -1,6 +1,7 @@
 package com.ProjetoPI.BaberShop.Service.impl;
 
 import com.ProjetoPI.BaberShop.Enums.StatusAgendamento;
+import com.ProjetoPI.BaberShop.Enums.TiposDeAgendamentos;
 import com.ProjetoPI.BaberShop.Model.Agendamento;
 import com.ProjetoPI.BaberShop.Model.Cliente;
 import com.ProjetoPI.BaberShop.Model.Horario;
@@ -72,11 +73,34 @@ public class AgendamentoServiceImpl implements AgendamentoService {
 
     @Override
     public void validar(Agendamento agendamento) {
-        if (agendamento.getDescricaoAgendamento()==null || agendamento.getDescricaoAgendamento().trim().equals("")){
-            throw new RegraNegocioException("Informe uma descrição valida");
-        }
+        TiposDeAgendamentos tipo1 = TiposDeAgendamentos.TIPO_1_CORTE_BARBA_SOBRANCELHA;
+        TiposDeAgendamentos tipo2 = TiposDeAgendamentos.TIPO_2_CORTE_SOBRANCELHA;
+        TiposDeAgendamentos tipo3 = TiposDeAgendamentos.TIPO_3_CORTE_BARBA;
+        TiposDeAgendamentos tipo4 = TiposDeAgendamentos.TIPO_4_CORTE_PENTEADO;
+        TiposDeAgendamentos tipo5 = TiposDeAgendamentos.TIPO_5_BARBA;
+        TiposDeAgendamentos tipo6 = TiposDeAgendamentos.TIPO_6_CORTE;
+
+
         if(agendamento.getTiposDeAgendamentos()==null){
             throw new RegraNegocioException("Informe um tipo de agendamento");
+        }
+        if (agendamento.getTiposDeAgendamentos()==tipo1){
+            agendamento.setDescricaoAgendamento("Corte,barba e sobrancelha");
+        }
+        if (agendamento.getTiposDeAgendamentos()==tipo2){
+            agendamento.setDescricaoAgendamento("Corte + Sobrancelha");
+        }
+        if (agendamento.getTiposDeAgendamentos()==tipo3){
+            agendamento.setDescricaoAgendamento("Corte + Barba");
+        }
+        if (agendamento.getTiposDeAgendamentos()==tipo4){
+            agendamento.setDescricaoAgendamento("Corte + Penteado");
+        }
+        if (agendamento.getTiposDeAgendamentos()==tipo5){
+            agendamento.setDescricaoAgendamento("Barba");
+        }
+        if (agendamento.getTiposDeAgendamentos()==tipo6){
+            agendamento.setDescricaoAgendamento("Corte");
         }
 
         if(agendamento.getProfissional()==null || agendamento.getProfissional().getId()==null){

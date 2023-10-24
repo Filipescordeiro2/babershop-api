@@ -38,7 +38,6 @@ public class ClienteController {
     public ResponseEntity salvar (@RequestBody ClienteDTO dto){
         Cliente cliente = Cliente.builder()
                 .nome(dto.getNome())
-                .sobrenome(dto.getSobrenome())
                 .telefone(dto.getTelefone())
                 .cpf(dto.getCpf())
                 .dataDeNascimento(dto.getDataDeNascimento())

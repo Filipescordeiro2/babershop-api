@@ -21,8 +21,6 @@ public class Cliente {
 
     @Column (name = "nome")
     private String nome;
-    @Column (name = "sobrenome")
-    private String sobrenome;
     @Column  (name = "telefone")
     private String telefone;
     @Column (name = "cpf")

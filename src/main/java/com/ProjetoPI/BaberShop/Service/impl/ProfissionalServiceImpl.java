@@ -65,4 +65,10 @@ public class ProfissionalServiceImpl implements ProfissionalService {
         return profissionalRepository.findById(id);
 
     }
+    @Override
+    public List<Profissional>findByNome(String nome) {
+        return profissionalRepository.findByNome(nome);
+    }
+
+
 }

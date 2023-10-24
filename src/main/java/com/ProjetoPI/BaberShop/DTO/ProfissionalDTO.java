@@ -12,7 +12,6 @@ public class ProfissionalDTO {
 
     private Long id;
     private String nome;
-    private String sobrenome;
     private String telefone;
     private String cpf;
     private String dataDeNascimento;
