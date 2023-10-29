@@ -18,4 +18,5 @@ public class ClienteDTO {
     private String dataDeNascimento;
     private String senha;
     private String email;
+    private String statusPerfil;
 }

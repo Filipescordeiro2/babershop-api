@@ -19,5 +19,6 @@ public interface AgendamentoService {
      void atualizarStatus (Agendamento agendamento, StatusAgendamento status);
      void validar (Agendamento agendamento);
      Optional<Agendamento> obterPorId (Long id);
+     List<Agendamento>obterAgendamentosDoClienteParaData(Cliente cliente,String dataAgendamento);
 
 }

@@ -16,5 +16,6 @@ public class    AgendamentoDTO {
     private String tiposDeAgendamentos;
     private String statusAgendamento;
     private String descricaoAgendamento;
+    private String data;
 
 }

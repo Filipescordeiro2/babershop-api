@@ -10,6 +10,9 @@ import com.ProjetoPI.BaberShop.Service.ClienteService;
 import com.ProjetoPI.BaberShop.Service.JornadaDeTrabalhoService;
 import com.ProjetoPI.BaberShop.Service.ProfissionalService;
 import com.ProjetoPI.BaberShop.exception.RegraNegocioException;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+import jakarta.persistence.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -32,21 +35,49 @@ public class AgendamentoController {
     @Autowired
     private JornadaDeTrabalhoService jornadaDeTrabalhoService;
 
-
     @PostMapping
     public ResponseEntity salvar(@RequestBody AgendamentoDTO dto) {
         try {
             // Converter DTO para entidade Agendamento
             Agendamento entidade = converter(dto);
 
+            // Verifique se o cliente já possui um agendamento para a data escolhida
+               String dataAgendamento = dto.getData();
+               Cliente cliente = entidade.getCliente();
+
+               if (clienteJaPossuiAgendamento(cliente, dataAgendamento)) {
+                // Cliente já possui um agendamento para a data escolhida
+                return ResponseEntity.badRequest().body("O cliente já possui um agendamento para a data escolhida.");
+            }
+    
+
             // Se não houver conflito, salvar o agendamento
             entidade = service.salvar(entidade);
     
             return new ResponseEntity(entidade, HttpStatus.CREATED);
+
         } catch (RegraNegocioException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
+    public boolean clienteJaPossuiAgendamento(Cliente cliente, String dataAgendamento) {
+        // Implemente a lógica para verificar se o cliente já possui um agendamento para a data
+        // Certifique-se de incluir a verificação do status diferente de "CANCELADO".
+        // Pode ser feita uma consulta ao banco de dados para verificar os agendamentos existentes
+        // para o cliente na data especificada com um status diferente de "CANCELADO".
+        
+        List<Agendamento> agendamentos = service.obterAgendamentosDoClienteParaData(cliente, dataAgendamento);
+        
+        // Verifique se há agendamentos com status diferente de "CANCELADO"
+        for (Agendamento agendamento : agendamentos) {
+            if (!agendamento.getStatusAgendamento().equals(StatusAgendamento.CANCELADO)) {
+                return true; // Cliente já possui um agendamento com status diferente de "CANCELADO"
+            }
+        }
+        
+        return false; // Cliente não possui agendamentos com status diferente de "CANCELADO"
+    }
+    
 
   
     @PutMapping("{id}")
@@ -97,6 +128,7 @@ public class AgendamentoController {
 
         Agendamento agendamentoFiltro = new Agendamento();
         agendamentoFiltro.setStatusAgendamento(StatusAgendamento.valueOf(status));
+        agendamentoFiltro.setData(dataAgendamento);
 
 
         Optional<Cliente>cliente=clienteService.obterPorId(idCliente);
@@ -115,6 +147,7 @@ public class AgendamentoController {
         Agendamento agendamento = new Agendamento();
         agendamento.setId(dto.getId());
         agendamento.setDescricaoAgendamento(dto.getDescricaoAgendamento());
+        agendamento.setData(dto.getData());
 
         Cliente cliente = clienteService
                 .obterPorId(dto.getId_cliente())

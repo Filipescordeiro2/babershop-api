@@ -120,5 +120,10 @@ public class AgendamentoServiceImpl implements AgendamentoService {
         return repository.findById(id);
     }
 
+    @Override
+    public List<Agendamento> obterAgendamentosDoClienteParaData(Cliente cliente, String dataAgendamento) {
+
+        return repository.findByClienteAndData(cliente, dataAgendamento);
+    }
 
 }

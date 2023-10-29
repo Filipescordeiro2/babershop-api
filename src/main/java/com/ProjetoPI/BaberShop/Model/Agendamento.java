@@ -36,5 +36,6 @@ public class Agendamento {
     @Column(name = "statusAgendamento")
     @Enumerated(value = EnumType.STRING)
     private StatusAgendamento statusAgendamento;
+    private String data;
 
 }

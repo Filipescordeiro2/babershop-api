@@ -1,7 +1,9 @@
 package com.ProjetoPI.BaberShop.Controller;
 
 
+import com.ProjetoPI.BaberShop.DTO.AtualizaStatusDTO;
 import com.ProjetoPI.BaberShop.DTO.ClienteDTO;
+import com.ProjetoPI.BaberShop.Enums.StatusAgendamento;
 import com.ProjetoPI.BaberShop.Model.Cliente;
 import com.ProjetoPI.BaberShop.Service.AgendamentoService;
 import com.ProjetoPI.BaberShop.Service.ClienteService;
@@ -27,7 +29,7 @@ public class ClienteController {
     @PostMapping("/autenticar")
     public ResponseEntity autenticar(@RequestBody ClienteDTO dto){
         try {
-            Cliente clienteAutenticado = service.autenticar(dto.getEmail(), dto.getSenha());
+            Cliente clienteAutenticado = service.autenticar(dto.getEmail(), dto.getSenha(),dto.getStatusPerfil());
             return ResponseEntity.ok(clienteAutenticado);
         }catch (ErroAutenticacao e){
             return  ResponseEntity.badRequest().body(e.getMessage());
@@ -43,6 +45,7 @@ public class ClienteController {
                 .dataDeNascimento(dto.getDataDeNascimento())
                 .email(dto.getEmail())
                 .senha(dto.getSenha())
+                .statusPerfil("ATIVO")
                 .build();
         try {
             Cliente clienteSalvo = service.salvarCliente(cliente);
@@ -77,6 +80,21 @@ public class ClienteController {
       return ResponseEntity.ok(clientes);
   }
 
+  @PutMapping("{id}/atualiza-status")
+  public ResponseEntity atualizaStatus(@PathVariable("id") Long id, @RequestBody AtualizaStatusDTO dto){
+      return service.obterPorId(id).map(entity->{
+        String statusPerfil = dto.getStatus();
 
+          if (statusPerfil==null){
+              return ResponseEntity.badRequest().body("Não foi possivel atualizar o status do USUARIO, envie um status valido");
+          }try {
+              entity.setStatusPerfil(statusPerfil);
+              service.atualizar(entity);
+              return ResponseEntity.ok(entity);
+          } catch (RegraNegocioException e){
+              return ResponseEntity.badRequest().body(e.getMessage());
+          }
+      }).orElseGet(()-> new ResponseEntity("Usuario não encontrado na base de dados",HttpStatus.BAD_REQUEST));
+  }
 
 }

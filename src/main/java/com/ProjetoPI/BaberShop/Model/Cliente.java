@@ -31,5 +31,5 @@ public class Cliente {
     private String senha;
     @Column (name = "email")
     private String email;
-
+    private String statusPerfil;
 }

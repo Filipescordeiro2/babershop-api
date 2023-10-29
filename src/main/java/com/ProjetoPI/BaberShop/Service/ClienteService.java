@@ -8,8 +8,9 @@ import java.util.Optional;
 
 public interface ClienteService {
 
-    Cliente autenticar (String email, String senha);
+    Cliente autenticar (String email, String senha,String statusPerfil);
     Cliente salvarCliente (Cliente cliente);
+    Cliente atualizar(Cliente cliente);
 
     void validarEmail (String email);
     List<Cliente> buscar (Cliente clienteFiltro);

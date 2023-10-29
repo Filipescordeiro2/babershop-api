@@ -12,6 +12,7 @@ import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -21,14 +22,17 @@ public class ClienteServiceImpl implements ClienteService {
     private ClienteRepository clienteRepository;
 
     @Override
-    public Cliente autenticar(String email, String senha) {
+    public Cliente autenticar(String email, String senha,String statusPerfil) {
         Optional<Cliente>cliente =clienteRepository.findByEmail(email);
-
+        String statusValido = "ATIVO";
         if (!cliente.isPresent()){
             throw new ErroAutenticacao("Usuario não encontrado para o email encontrado");
         }
         if (!cliente.get().getSenha().equals(senha)){
             throw new ErroAutenticacao("Senha Incorreta");
+        }
+        if (!cliente.get().getStatusPerfil().equals(statusValido)){
+            throw new ErroAutenticacao("USUARIO INATIVO");
         }
 
         return cliente.get();
@@ -41,6 +45,12 @@ public class ClienteServiceImpl implements ClienteService {
      return clienteRepository.save(cliente);
 
     }
+
+    @Override
+    @Transactional
+    public Cliente atualizar(Cliente cliente) {
+        Objects.requireNonNull(cliente.getId());
+        return clienteRepository.save(cliente);    }
 
     @Override
     public void validarEmail(String email) {
