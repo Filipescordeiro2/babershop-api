@@ -101,4 +101,11 @@ public class JornadaDeTrabalhoServiceImp implements JornadaDeTrabalhoService {
         validar(jornadaDeTrabalho);
         return jornadaDeTrabalhoRepository.save(jornadaDeTrabalho);
     }
+
+    @Override
+    @Transactional
+    public Horario atualizarHorario(Horario horario) {
+        Objects.requireNonNull(horario.getId());
+        return horarioRepository.save(horario);
+    }
 }

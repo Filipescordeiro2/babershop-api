@@ -4,19 +4,19 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
+import com.ProjetoPI.BaberShop.DTO.AtualizaStatusDTO;
+import com.ProjetoPI.BaberShop.Enums.StatusAgendamento;
+import com.ProjetoPI.BaberShop.exception.RegraNegocioException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import com.ProjetoPI.BaberShop.Model.Agendamento;
+import com.ProjetoPI.BaberShop.Model.Cliente;
 import com.ProjetoPI.BaberShop.Model.Horario;
 import com.ProjetoPI.BaberShop.Model.Profissional;
-
+import com.ProjetoPI.BaberShop.Service.AgendamentoService;
 import com.ProjetoPI.BaberShop.Service.JornadaDeTrabalhoService;
 import com.ProjetoPI.BaberShop.Service.ProfissionalService;
 @RestController
@@ -28,6 +28,9 @@ public class HorariosController {
     private JornadaDeTrabalhoService service;
     @Autowired
     private ProfissionalService profissionalService;
+    @Autowired
+    private AgendamentoService agendamentoService;
+
      
     @GetMapping
     public ResponseEntity<java.util.List<Horario>> buscarHorariosDoProfissional(@RequestParam(value = "Profissional")Long Profissional,
@@ -87,4 +90,44 @@ public class HorariosController {
 
         return ResponseEntity.ok(horarios);
     }
+    @PutMapping("{id}/atualiza-status")
+    public ResponseEntity atualizaStatus(@PathVariable("id") Long id, @RequestBody AtualizaStatusDTO dto){
+        return service.obterHorarioPorId(id).map(entity->{
+            String statusSelecionado = dto.getStatus();
+            if (statusSelecionado==null){
+                return ResponseEntity.badRequest().body("Não foi possivel atualizar o status do agendamento, envie um status valido");
+            }try {
+                entity.setStatus(statusSelecionado);
+                service.atualizarHorario(entity);
+                return ResponseEntity.ok(entity);
+            } catch (RegraNegocioException e){
+                return ResponseEntity.badRequest().body(e.getMessage());
+            }
+        }).orElseGet(()-> new ResponseEntity("Agendamento não encontrado na base de dados",HttpStatus.BAD_REQUEST));
+    }
+    
+    
+    @GetMapping("/AgendaComClientes")
+    public ResponseEntity buscar(@RequestParam(value = "status",required = false)String status,
+                                 @RequestParam(value = "data",required = false) String dataAgendamento,
+                                 @RequestParam(value = "hora",required = false)String horaAgendamento,
+                                 @RequestParam(value = "profissional")Long idprofissional){
+
+        Agendamento agendamentoFiltro = new Agendamento();
+        agendamentoFiltro.setStatusAgendamento(StatusAgendamento.valueOf(status));
+        agendamentoFiltro.setData(dataAgendamento);
+
+
+        Optional<Profissional>profissional=profissionalService.obterPorId(idprofissional);
+
+        if (!profissional.isPresent()){
+            return ResponseEntity.badRequest().body("não foi possivel realizar a consulta");
+        }else {
+            agendamentoFiltro.setProfissional(profissional.get());
+        }
+
+        List<Agendamento>agendamentos=agendamentoService.buscar(agendamentoFiltro);
+        return ResponseEntity.ok(agendamentos);
+    }
+
 }
