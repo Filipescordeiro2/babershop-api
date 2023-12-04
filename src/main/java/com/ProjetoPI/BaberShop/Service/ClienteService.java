@@ -13,6 +13,7 @@ public interface ClienteService {
     Cliente atualizar(Cliente cliente);
 
     void validarEmail (String email);
+    void validarCPF (String cpf);
     List<Cliente> buscar (Cliente clienteFiltro);
 
     Optional<Cliente> obterPorId(Long id);

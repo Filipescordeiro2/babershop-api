@@ -42,6 +42,7 @@ public class ClienteServiceImpl implements ClienteService {
     @Transactional
     public Cliente salvarCliente(Cliente cliente) {
      validarEmail(cliente.getEmail());
+     validarCPF(cliente.getCpf());
      return clienteRepository.save(cliente);
 
     }
@@ -57,6 +58,13 @@ public class ClienteServiceImpl implements ClienteService {
         boolean existe = clienteRepository.existsByEmail(email);
         if (existe){
             throw new RegraNegocioException("Ja existe um usuario cadastrado com esse email");
+        }
+    }
+    @Override
+    public void validarCPF(String cpf) {
+        boolean existe = clienteRepository.existsByCpf(cpf);
+        if (existe){
+            throw new RegraNegocioException("Já existe um usuário cadastrado com esse CPF");
         }
     }
 
